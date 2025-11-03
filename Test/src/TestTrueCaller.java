@@ -1,3 +1,4 @@
+import Exceptions.ImmutablePhonebookExceptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -5,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTrueCaller {
     private Caller caller;
+    private Phonebook phonebook;
 
     @BeforeEach
     public void setUp() {
         caller = new Caller("PhoneNumber");
+        phonebook = new Phonebook();
     }
 
     @Test
@@ -75,4 +78,33 @@ public class TestTrueCaller {
         caller.markAsSpam();
         assertEquals("PhoneNumber", caller.getPhoneNumber());
     }
+
+    @Test
+    public void testThatYouCanAddAContactThatDoesntExist() {
+        phonebook.addCaller("PhoneNumber");
+        assertEquals("PhoneNumber", caller.getPhoneNumber());
+    }
+
+    @Test
+    public void testThatGetCallersReturnsAllAddedCallers(){
+        phonebook.addCaller("PhoneNumber");
+        phonebook.addCaller("PhoneNumber2");
+        phonebook.addCaller("PhoneNumber3");
+
+        phonebook.getCallers();
+
+        assertEquals(3, phonebook.getCallers().size());
+    }
+
+    @Test
+    public void testThatGetCallersReturnsUnmodifiableCopy() {
+        phonebook.addCaller("PhoneNumber");
+        phonebook.getCallers();
+
+        assertEquals(1, phonebook.getCallers().size());
+        assertThrows(ImmutablePhonebookExceptions.class, () -> {
+            phonebook.put("PhoneNumber", new Caller("PhoneNumber"));
+        });
+    }
+
 }

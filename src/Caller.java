@@ -74,4 +74,8 @@ public class Caller {
         return caller;
     }
 
+    @Override
+    public String toString() {
+        return phoneNumber;
+    }
 }
